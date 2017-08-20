@@ -1,0 +1,7 @@
+dist/*
+node_modules/*
+.tscache/*
+*/.baseDir.ts
+unit_results.txt
+results.txt
+coverage/*
