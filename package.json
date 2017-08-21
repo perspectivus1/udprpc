@@ -1,5 +1,5 @@
 {
-  "name": "udprpc",
+  "name": "@gobark/udprpc",
   "version": "0.0.1",
   "description": "A UDP-based JSON-RPC 2.0 library for peer-to-peer communications with support for ES6 promises",
   "main": "dist/index.js",

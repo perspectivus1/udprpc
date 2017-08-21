@@ -1,4 +1,4 @@
-# README #
+[![Build Status](https://travis-ci.org/perspectivus1/udprpc.svg?branch=master)](https://travis-ci.org/perspectivus1/udprpc)
 
 # UdpRpc #
 This is a UDP-based JSON-RPC 2.0 library for peer-to-peer communications with support for ES6 promises.
@@ -7,8 +7,7 @@ This library is (nearly) compliant with the JSON-RPC 2.0 Specification http://ww
 
 Missing: Support JSON-RPC batch requests and reponses.
 
-## Prerequisites
-Install dependencies:
+## Installation
 ```
 npm install
 ```
