@@ -2,16 +2,21 @@
   "name": "udprpc",
   "version": "0.0.1",
   "description": "A UDP-based JSON-RPC 2.0 library for peer-to-peer communications with support for ES6 promises",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "grunt test",
     "build": "grunt",
-    "coverage": "grunt coverage"
+    "coverage": "grunt coverage",
+	"prepublish": "npm run build"
   },
   "author": "Eyal Barlev <perspectivus@gmail.com>",
   "contributors": [
     "Michal Keidar <lutraki@gmail.com>"    
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/perspectivus1/udprpc.git"
+  },
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.0.35",
