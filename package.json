@@ -1,8 +1,8 @@
 {
   "name": "@gobark/udprpc",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A UDP-based JSON-RPC 2.0 library for peer-to-peer communications with support for ES6 promises",
-  "main": "dist/index.js",
+  "main": "dist/code/UdpRpc.js",
   "scripts": {
     "test": "grunt test",
     "build": "grunt",

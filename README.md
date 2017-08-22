@@ -7,32 +7,65 @@ This library is (nearly) compliant with the JSON-RPC 2.0 Specification http://ww
 
 Missing: Support JSON-RPC batch requests and reponses.
 
-## Installation
+## Installation ##
 ```
-npm install
+npm install @gobark/udprpc
 ```
-## Development Environment
-The code, including tests, is written in TypeScript. The source files are located in the ```code``` folder. The tests and related files are located in the ```tests``` folder.
 
-The transpiled JavaScript code retains the above structure but resides in the ```dist``` folder.
+## Usage ##
+UdpRpc instance listens to the same port from which it executes requests.
 
-We use npm and Grunt to build the code and run tests. Mocha is our test framework.
-### Build Process
-* Linting the code
-* Transpiling code from TypeScript to JavaScript.
+### Server ###
+```
+const url = require("url");
+// import UdpRpc
+const UdpRpc = require("@gobark/udprpc").UdpRpc;
+// create a new instance of UdpRpc
+let udpRpcServer = new UdpRpc(3000);
+// start listening
+udpRpcServer.start();
+// handle incoming requests
+udpRpcServer.register((method, params, url, resolve, reject) => {
+    switch (method) {
+        case "sum": {
+            if (isNaN(params[0]) || isNaN(params[1])) {
+                reject("Parameters must be numbers");
+            } else {
+                resolve(Number(params[0]) + Number(params[1]));
+            }
+            break;
+        }
+        case "concat": {
+            resolve(`${params[0]}${params[1]}`);
+            break;
+        }
+    }
 
-Run this command to start the build process:
-```npm run build```
-### Test Process
-* Running tests
-* Checking code coverage
+    // stop server when needed
+    // udpRpcServer.stop();
+});
+```
+### Client ###
+```
+// import UdpRpc
+const UdpRpc = require("UdpRpc");
+// create a new instance of UdpRpc
+let udpRpcClient = new UdpRpc(3001);
+// start listening
+udpRpcClient.start();
+return udpRpcClient.send("sum", [ 1, 2 ], url.parse(`http://127.0.0.1:3000`)).then((response) => {
+    console.log(response); // response === 3
+}).catch((err) => {
+    console.error(err);
+}).then(() => {
+    // stop client
+    udpRpcClient.stop();
+});
+```
 
-Run these commands to execute the tests and coverage respectively: ```npm test``` and ```npm run coverage```
+## Contribution guidelines ##
+[See CONTRIBUTING.md](./CONTRIBUTING.md)
 
-This runs all the tests that reside in the ```dist/tests``` folder.
-### Contribution guidelines ###
-Never lower the code coverage thresholds specified in the Gruntfile.
-
-### Who do I talk to? ###
+## Who do I talk to? ##
 * perspectivus@gmail.com
 * lutraki@gmail.com
