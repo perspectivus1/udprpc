@@ -1,14 +1,14 @@
 [![Build Status](https://travis-ci.org/perspectivus1/udprpc.svg?branch=master)](https://travis-ci.org/perspectivus1/udprpc)
 
 # UdpRpc #
-This is a UDP-based JSON-RPC 2.0 library for peer-to-peer communications with support for ES6 promises.
+This is a UDP-based JSON-RPC 2.0 library with support for ES6 promises. One common use-case would be for for peer-to-peer communications.
 
-This library is (nearly) compliant with the JSON-RPC 2.0 Specification http://www.jsonrpc.org/specification.
+This library is (nearly) compliant with the JSON-RPC 2.0 Specification at [http://www.jsonrpc.org/specification](http://www.jsonrpc.org/specification).
 
-Missing: Support JSON-RPC batch requests and reponses.
+Missing: Support JSON-RPC batch requests and reponses (see [Contribution](#contribution) section below).
 
 ## Installation ##
-```
+```bash
 npm install @gobark/udprpc
 ```
 
@@ -19,7 +19,6 @@ Even through all peers can send and receive requests -- for the sake of simplici
 
 ### Server ###
 ```javascript
-const url = require("url");
 // import UdpRpc
 const UdpRpc = require("@gobark/udprpc").UdpRpc;
 // create a new instance of UdpRpc
@@ -27,7 +26,7 @@ let udpRpcServer = new UdpRpc(3000); // can be any port
 // start listening
 udpRpcServer.start();
 // handle incoming requests
-udpRpcServer.register((method, params, url, resolve, reject) => {
+udpRpcServer.register((method, params, address, port, resolve, reject) => {
     switch (method) {
         case "sum": {
             if (isNaN(params[0]) || isNaN(params[1])) {
@@ -66,7 +65,12 @@ return udpRpcClient.send("sum", [ 1, 2 ], "127.0.0.1", 3000).then((response) => 
 });
 ```
 
-## Contribution guidelines ##
+## Contribution ##
+### Feature requests ###
+* Support JSON-RPC [batch](http://www.jsonrpc.org/specification#batch) requests and reponses
+* Implement secure UDP communications ([DTLS](https://en.wikipedia.org/wiki/Datagram_Transport_Layer_Security))
+### Modifying this package ###
+
 [See CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## Who do I talk to? ##

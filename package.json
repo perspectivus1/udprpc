@@ -1,6 +1,6 @@
 {
   "name": "@gobark/udprpc",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "A UDP-based JSON-RPC 2.0 library for peer-to-peer communications with support for ES6 promises",
   "main": "dist/code/UdpRpc.js",
   "scripts": {
@@ -12,6 +12,9 @@
   "author": "Eyal Barlev <perspectivus@gmail.com>",
   "contributors": [
     "Michal Keidar <lutraki@gmail.com>"    
+  ],
+  "keywords": [
+    "udp", "dgram", "json-rpc"
   ],
   "repository": {
     "type": "git",
