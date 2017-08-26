@@ -17,6 +17,8 @@ UdpRpc leverages UDP to enable each peer listen to and send requests on the same
 
 Even through all peers can send and receive requests -- for the sake of simplicity -- **in the example** below the "cient" sends requests and the "server" receives them.
 
+Also note that different peers can reside on different hosts. In the example below, we assume that both peers are on localhost.
+
 ### Server ###
 ```javascript
 // import UdpRpc
@@ -49,7 +51,7 @@ udpRpcServer.register((method, params, address, port, resolve, reject) => {
 ### Client ###
 ```javascript
 // import UdpRpc
-const UdpRpc = require("UdpRpc");
+const UdpRpc = require("@gobark/udprpc").UdpRpc;
 // create a new instance of UdpRpc
 let udpRpcClient = new UdpRpc(3001);
 // start listening
