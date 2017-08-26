@@ -13,15 +13,17 @@ npm install @gobark/udprpc
 ```
 
 ## Usage ##
-UdpRpc instance listens to the same port from which it executes requests.
+UdpRpc leverages UDP to enable each peer listen to and send requests on the same port.
+
+Even through all peers can send and receive requests -- for the sake of simplicity -- **in the example** below the "cient" sends requests and the "server" receives them.
 
 ### Server ###
-```
+```javascript
 const url = require("url");
 // import UdpRpc
 const UdpRpc = require("@gobark/udprpc").UdpRpc;
 // create a new instance of UdpRpc
-let udpRpcServer = new UdpRpc(3000);
+let udpRpcServer = new UdpRpc(3000); // can be any port
 // start listening
 udpRpcServer.start();
 // handle incoming requests
@@ -46,14 +48,15 @@ udpRpcServer.register((method, params, url, resolve, reject) => {
 });
 ```
 ### Client ###
-```
+```javascript
 // import UdpRpc
 const UdpRpc = require("UdpRpc");
 // create a new instance of UdpRpc
 let udpRpcClient = new UdpRpc(3001);
 // start listening
 udpRpcClient.start();
-return udpRpcClient.send("sum", [ 1, 2 ], url.parse(`http://127.0.0.1:3000`)).then((response) => {
+return udpRpcClient.send("sum", [ 1, 2 ], "127.0.0.1", 3000).then((response) => {
+    // the server can be any address and port as long as their accessible to the client
     console.log(response); // response === 3
 }).catch((err) => {
     console.error(err);

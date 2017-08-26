@@ -1,5 +1,4 @@
 import * as dgram from "dgram";
-import * as url from "url";
 import {UdpSocketFactory, UdpSocket, UdpSocketNative} from "./UdpSocket";
 import {Config} from "./Config";
 
@@ -20,7 +19,7 @@ type UdpRpcResponse = { jsonrpc: string, error?: UdpRpcError, result: any, id: n
 type UdpRpcError = { code: number, message: string, data?: any };
 
 type UdpRpcMessage = { message_type: string, body: UdpRpcRequest | UdpRpcResponse };
-export type UdpRpcRegistration = (method: string, params: Array<any>, url: url.Url, resolve, reject) => void;
+export type UdpRpcRegistration = (method: string, params: Array<any>, address: string, port: number, resolve, reject) => void;
 
 const _REQUEST: string = "request";
 const _RESPONSE: string = "response";
@@ -78,12 +77,11 @@ export class UdpRpc {
                 case _REQUEST: {
                     let request: UdpRpcRequest = internalResponseReceived.body as UdpRpcRequest;
                     let id: number = request.id;
-                    let sourceUrl: url.Url = url.parse(`http://${rinfo.address}:${rinfo.port}`);
                     if (id === undefined) { // this is a JSON-RPC 2.0 notification -- no response is expected
-                        this._registration(request.method, request.params, sourceUrl, () => {}, () => {});
+                        this._registration(request.method, request.params, rinfo.address, rinfo.port, () => {}, () => {});
                     } else { // this is a JSON-RPC 2.0 request
                         new Promise((resolve, reject) => {
-                            this._registration(request.method, request.params, sourceUrl, resolve, reject);
+                            this._registration(request.method, request.params, rinfo.address, rinfo.port, resolve, reject);
                         }).then((response: any) => {
                             let responseInternal: UdpRpcResponse = {
                                 jsonrpc: _JSONRPC_VERSION,
@@ -94,7 +92,7 @@ export class UdpRpc {
                                 message_type: _RESPONSE,
                                 body: responseInternal
                             };
-                            this._udpSocket.send(JSON.stringify(internalMessage), Number(sourceUrl.port), sourceUrl.hostname);
+                            this._udpSocket.send(JSON.stringify(internalMessage), rinfo.port, rinfo.address);
                         }).catch((err) => {
                             let responseInternal: UdpRpcResponse = {
                                 jsonrpc: _JSONRPC_VERSION,
@@ -106,7 +104,7 @@ export class UdpRpc {
                                 message_type: _RESPONSE,
                                 body: responseInternal
                             };
-                            this._udpSocket.send(JSON.stringify(internalMessage), Number(sourceUrl.port), sourceUrl.hostname);
+                            this._udpSocket.send(JSON.stringify(internalMessage), rinfo.port, rinfo.address);
                         });
                     }
                     break;
@@ -142,13 +140,13 @@ export class UdpRpc {
         });
     }
 
-    public send(method: string, params: Array<any>, url: url.Url): Promise<any> {
+    public send(method: string, params: Array<any>, address: string, port: number): Promise<any> {
         // TODO: Add more tries without returning the promise, up to a certain point
-        let promise: Promise<any> = this._doSend(method, params, url).then((response: any) => {
+        let promise: Promise<any> = this._doSend(method, params, address, port).then((response: any) => {
             return response;
         }).catch((err: UdpRpcError) => {
             if (err.code === _INTERNAL_ERR_TIMEOUT_CODE) {
-                return this.send(method, params, url);
+                return this.send(method, params, address, port);
             } else {
                 throw err;
             }
@@ -173,13 +171,13 @@ export class UdpRpc {
         this._registration = registration;
     }
 
-    private _doSend(method: string, params: Array<any>, url: url.Url): Promise<any> {
+    private _doSend(method: string, params: Array<any>, address: string, port: number): Promise<any> {
         let promise: Promise<any> = new Promise((resolve, reject) => {
             let id: number = UdpRpc.getId();
             let internalMessage: UdpRpcMessage = { message_type: _REQUEST, body: { jsonrpc: _JSONRPC_VERSION, method: method, params: params, id: id }};
             return new Promise((resolve2, reject2) => {
                 // this request will be resolved in the "onMessage" method
-                this._udpSocket.send(JSON.stringify(internalMessage), Number(url.port), url.hostname, (err) => {
+                this._udpSocket.send(JSON.stringify(internalMessage), port, address, (err) => {
                     if (err) {
                         reject2(err);
                     } else {

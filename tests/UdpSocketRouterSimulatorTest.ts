@@ -1,5 +1,4 @@
 import * as dgram from "dgram";
-import * as url from "url";
 import "mocha";
 import "unit.js";
 import * as assert from "assert";
