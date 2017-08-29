@@ -39,9 +39,14 @@ export class UdpRpc {
     private _port: number;
     private _registration: UdpRpcRegistration;
     private _resolveRejectMap: Map<number, any>;
+    private _udpRpcRetriesTimeout: Number;
+    private _udpRpcTimeout: Number;
 
     // TODO: do not get the port here, get it when calling bind
     public constructor(port: number, udpSocketClass?: { new(): UdpSocket }) {
+        this._udpRpcRetriesTimeout = Number(process.env.udpRpcRetriesTimeout || Config.udpRpcRetriesTimeout);
+        this._udpRpcTimeout = Number(process.env.udpRpcTimeout || Config.udpRpcTimeout);
+        
         this._port = port;
         // currently supports IPv4
         // TODO: support IPv6
@@ -155,8 +160,8 @@ export class UdpRpc {
         let timeout = new Promise((resolve, reject) => {
             let id = setTimeout(() => {
                 clearTimeout(id);
-                reject({ code: _INTERNAL_ERR_RETRIES_TIMEOUT_CODE, message: `Promises timed out in ${Config.udpRpcRetriesTimeout} ms.`, data: null });
-            }, Config.udpRpcRetriesTimeout);
+                reject({ code: _INTERNAL_ERR_RETRIES_TIMEOUT_CODE, message: `Promises timed out in ${this._udpRpcRetriesTimeout} ms.`, data: null });
+            }, this._udpRpcRetriesTimeout);
         });
 
         // Returns a race between our timeout and the passed in promise
@@ -191,8 +196,8 @@ export class UdpRpc {
         let timeout = new Promise((resolve, reject) => {
             let id = setTimeout(() => {
                 clearTimeout(id);
-                reject({ code: _INTERNAL_ERR_TIMEOUT_CODE, message: `Promise timed out in ${Config.udpRpcTimeout} ms.`, data: null });
-            }, Config.udpRpcTimeout);
+                reject({ code: _INTERNAL_ERR_TIMEOUT_CODE, message: `Promise timed out in ${this._udpRpcTimeout} ms.`, data: null });
+            }, this._udpRpcTimeout);
         });
 
         // Returns a race between our timeout and the passed in promise
