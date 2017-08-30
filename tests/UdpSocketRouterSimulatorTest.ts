@@ -4,7 +4,6 @@ import "unit.js";
 import * as assert from "assert";
 import {UdpSocket, UdpSocketNative, UdpSocketFactory} from "../code/UdpSocket";
 import {UdpSocketRouterSimulator} from "./UdpSocketRouterSimulator";
-import {Config} from "../code/Config";
 
 describe("Udp Socket Router Simulator Test:", () => {
   before(() => {
@@ -41,11 +40,9 @@ describe("Udp Socket Router Simulator Test:", () => {
   });
 
   it("testing dependency injection map", () => {
-    Config.udpSocketClass = UdpSocketRouterSimulator;
-    let dummyClazz: {new(): UdpSocket} = Config.udpSocketClass;
+    let dummyClazz: {new(): UdpSocket} = UdpSocketRouterSimulator;
     let aDummy = new dummyClazz();
     assert(aDummy instanceof UdpSocketRouterSimulator);
-    Config.udpSocketClass = null;
   });
 
   after(() => {

@@ -71,6 +71,7 @@ return udpRpcClient.send("sum", [ 1, 2 ], "127.0.0.1", 3000).then((response) => 
 ### Feature requests ###
 * Support JSON-RPC [batch](http://www.jsonrpc.org/specification#batch) requests and reponses
 * Implement secure UDP communications ([DTLS](https://en.wikipedia.org/wiki/Datagram_Transport_Layer_Security))
+* Support IPv6
 ### Modifying this package ###
 
 [See CONTRIBUTING.md](./CONTRIBUTING.md)

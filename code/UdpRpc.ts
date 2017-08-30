@@ -1,6 +1,5 @@
 import * as dgram from "dgram";
 import {UdpSocketFactory, UdpSocket, UdpSocketNative} from "./UdpSocket";
-import {Config} from "./Config";
 
 /**
  * This is a UDP-based JSON-RPC 2.0 library for peer-to-peer
@@ -39,20 +38,22 @@ export class UdpRpc {
     private _port: number;
     private _registration: UdpRpcRegistration;
     private _resolveRejectMap: Map<number, any>;
-    private _udpRpcRetriesTimeout: Number;
-    private _udpRpcTimeout: Number;
+    private _udpRpcRetriesTimeout: number = 150;
+    private _udpRpcTimeout: number = 40;
 
     // TODO: do not get the port here, get it when calling bind
     public constructor(port: number, udpSocketClass?: { new(): UdpSocket }) {
-        this._udpRpcRetriesTimeout = Number(process.env.udpRpcRetriesTimeout || Config.udpRpcRetriesTimeout);
-        this._udpRpcTimeout = Number(process.env.udpRpcTimeout || Config.udpRpcTimeout);
-        
+        if (process.env.udpRpcRetriesTimeout) {
+            this._udpRpcRetriesTimeout = Number(process.env.udpRpcRetriesTimeout);
+        }
+
+        if (process.env.udpRpcTimeout) {
+            this._udpRpcTimeout = Number(process.env.udpRpcTimeout);
+        }
+
         this._port = port;
         // currently supports IPv4
         // TODO: support IPv6
-        if (!udpSocketClass) {
-             udpSocketClass = Config.udpSocketClass;
-        }
         if (!udpSocketClass) {
             // default is native
             udpSocketClass = UdpSocketNative;
